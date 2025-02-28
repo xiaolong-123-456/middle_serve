@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateMchProAloneMapper">
+    
+    <resultMap type="OperateMchProAlone" id="OperateMchProAloneResult">
+        <result property="id"    column="id"    />
+        <result property="mchProId"    column="mch_pro_id"    />
+        <result property="payChannelId"    column="pay_channel_id"    />
+        <result property="sort"    column="sort"    />
+        <result property="riskControlId"    column="risk_control_id"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateMchProAloneVo">
+        select id, mch_pro_id, pay_channel_id, sort, riskControlId,status, del_flag, create_by, create_time, update_by, update_time from operate_mch_pro_alone
+    </sql>
+
+    <select id="selectOperateMchProAloneList" parameterType="OperateMchProAlone" resultMap="OperateMchProAloneResult">
+        <include refid="selectOperateMchProAloneVo"/>
+        where del_flag = '0'
+        <if test="mchProId != null and mchProId != '' ">
+            and mch_pro_id = #{mchProId}
+        </if>
+        <if test="payChannelId != null and payChannelId != '' ">
+            and pay_channel_id = #{payChannelId}
+        </if>
+        <if test="sort != null and sort != '' ">
+            and sort = #{sort}
+        </if>
+        <if test="status != null and status != ''">
+            and status = #{status}
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperateMchProAloneById" parameterType="Long" resultMap="OperateMchProAloneResult">
+        <include refid="selectOperateMchProAloneVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateMchProAlone" parameterType="OperateMchProAlone" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_mch_pro_alone
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mchProId != null">mch_pro_id,</if>
+            <if test="payChannelId != null">pay_channel_id,</if>
+            <if test="sort != null">sort,</if>
+            <if test="riskControlId != null">risk_control_id,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mchProId != null">#{mchProId},</if>
+            <if test="payChannelId != null">#{payChannelId},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="riskControlId != null">#{riskControlId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateMchProAlone" parameterType="OperateMchProAlone">
+        update operate_mch_pro_alone
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mchProId != null">mch_pro_id = #{mchProId},</if>
+            <if test="payChannelId != null">pay_channel_id = #{payChannelId},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="riskControlId != null">risk_control_id = #{riskControlId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateMchProAloneById" parameterType="Long">
+        delete from operate_mch_pro_alone where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateMchProAloneByIds" parameterType="String">
+        delete from operate_mch_pro_alone where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectListByMchProId" resultType="com.ruoyi.operate.dto.OperatePayProjectInfoDTO">
+        select
+        c.id,
+        c.cha_name as chaName,
+        b.rate as chaRate,
+        a.sort as sort,
+        a.risk_control_id as riskControlId,
+        concat('最大:', d.max_amount, ', 最小:', d.min_amount,IF(d.amount_type = '0', ',连续任意金额', ',固定金额')) as riskInfo
+        from operate_mch_pro_alone a
+        left join operate_merchant_prodect b on a.mch_pro_id = b.id
+        left join operate_pay_channel c on a.pay_channel_id = c.id
+        left join operate_risk_control d on a.risk_control_id = d.id
+        where a.del_flag = '0'
+        <if test="mchProId != '' and mchProId != null">
+            and a.mch_pro_id = #{mchProId}
+        </if>
+        order by a.create_time desc
+    </select>
+
+    <update id="updateByMchProId">
+        update operate_mch_pro_alone
+        set del_flag = '2'
+        where mch_pro_id = #{mchProId}
+    </update>
+
+    <update id="updateByPayChaId">
+        update operate_mch_pro_alone set risk_control_id = #{riskControlId} where pay_channel_id = #{payChaId}
+    </update>
+
+    <update id="updateByMchProIds">
+        update operate_mch_pro_alone
+        set del_flag = '2'
+        where mch_pro_id in
+        <foreach item="mchProId" collection="mchProIds" open="(" separator="," close=")">
+            #{mchProId}
+        </foreach>
+    </update>
+
+    <select id="selectChaByMchProId" resultType="com.ruoyi.operate.dto.RelevanceDTO">
+        select
+        a.sort as sort,
+        a.risk_control_id as riskControlId,
+        b.id as payChaId,
+        b.cha_code as payChaCode,
+        b.cha_name as payChaName,
+        b.cha_rate as chaRate,
+        b.cha_type as chaType,
+        c.id as chaLabId,
+        c.cha_lab_name as chaLabName
+        from operate_mch_pro_alone a
+        left join operate_pay_channel b on a.pay_channel_id = b.id
+        left join operate_channel_label c on b.cha_lab_id = c.id
+        where a.del_flag = '0' and b.del_flag = '0' and c.del_flag = '0' and a.sort != 0
+        and a.status = '0' and b.status = '0' and c.status = '0'
+        <if test="mchProId != '' and mchProId != null">
+            and a.mch_pro_id = #{mchProId}
+        </if>
+        order by a.sort desc
+    </select>
+</mapper>

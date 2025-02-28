@@ -1,26 +1,27 @@
 package com.ruoyi.common.utils.http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.utils.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.*;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.utils.StringUtils;
+import java.util.Map;
 
 /**
  * 通用http发送方法
@@ -30,6 +31,80 @@ import com.ruoyi.common.utils.StringUtils;
 public class HttpUtils
 {
     private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
+
+    //post请求（json）
+    public static String sendHttpPost(String url, Map<String, Object> params) throws Exception {
+        log.info("========url==============Postjson=======" + url + "发送请求");
+//        JSONObject json = new JSONObject(params);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonBody = objectMapper.writeValueAsString(params);
+
+        String body = "";
+        //创建httpclient对象
+        CloseableHttpClient client = HttpClients.createDefault();
+        //创建post方式请求对象
+        HttpPost httpPost = new HttpPost(url);
+        //装填参数
+        StringEntity s = new StringEntity(jsonBody, "utf-8");
+//        s.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,
+//                "application/json"));
+        //设置参数到请求对象中
+        httpPost.setEntity(s);
+        httpPost.setHeader("Content-type", "application/json");
+        httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        httpPost.setHeader("welcome", "welcome-pay");
+        //执行请求操作，并拿到结果（同步阻塞）
+        CloseableHttpResponse response = client.execute(httpPost);
+        //获取结果实体
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            //按指定编码转换结果实体为String类型
+            body = EntityUtils.toString(entity, "utf-8");
+        }
+        EntityUtils.consume(entity);
+        //释放链接
+        response.close();
+        return body;
+    }
+
+    //post请求（表单的形式）
+    public static String sendHttpPostParam(String url, Map<String, Object> params) throws Exception {
+        log.info("========url=======PostParam=======" + url + "发送请求");
+//        JSONObject json = new JSONObject(params);
+
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String,Object> entry:params.entrySet()){
+            sb.append(entry.getKey() + "=" + entry.getValue() + "&");
+        }
+        String result = sb.substring(0, sb.length() - 1);
+
+        String body = "";
+        //创建httpclient对象
+        CloseableHttpClient client = HttpClients.createDefault();
+        //创建post方式请求对象
+        HttpPost httpPost = new HttpPost(url);
+        //装填参数
+        StringEntity s = new StringEntity(result, "utf-8");
+//        s.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,
+//                "application/x-www-form-urlencoded"));
+        //设置参数到请求对象中
+        httpPost.setEntity(s);
+        httpPost.setHeader("Content-type", "application/x-www-form-urlencoded");
+        httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        //执行请求操作，并拿到结果（同步阻塞）
+        CloseableHttpResponse response = client.execute(httpPost);
+        //获取结果实体
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            //按指定编码转换结果实体为String类型
+            body = EntityUtils.toString(entity, "utf-8");
+        }
+        EntityUtils.consume(entity);
+        //释放链接
+        response.close();
+        return body;
+    }
 
     /**
      * 向指定 URL 发送GET方法的请求
@@ -64,6 +139,7 @@ public class HttpUtils
      */
     public static String sendGet(String url, String param, String contentType)
     {
+        log.info("========url======get=======" + url + "发送请求");
         StringBuilder result = new StringBuilder();
         BufferedReader in = null;
         try
@@ -75,6 +151,7 @@ public class HttpUtils
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+//            connection.setRequestProperty("contentType", "application/json");
             connection.connect();
             in = new BufferedReader(new InputStreamReader(connection.getInputStream(), contentType));
             String line;
@@ -138,7 +215,7 @@ public class HttpUtils
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
             conn.setRequestProperty("Accept-Charset", "utf-8");
-            conn.setRequestProperty("contentType", "utf-8");
+            conn.setRequestProperty("contentType", "application/json");
             conn.setDoOutput(true);
             conn.setDoInput(true);
             out = new PrintWriter(conn.getOutputStream());

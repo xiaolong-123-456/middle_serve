@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateReplenishmentMapper">
+    
+    <resultMap type="OperateReplenishment" id="OperateReplenishmentResult">
+        <result property="id"    column="id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="mchId"    column="mch_id"    />
+        <result property="mchName"    column="mch_name"    />
+        <result property="mchOrderNo"    column="mch_order_no"    />
+        <result property="payOrderNo"    column="pay_order_no"    />
+        <result property="chaLabId"    column="cha_lab_id"    />
+        <result property="chaLabName"    column="cha_lab_name"    />
+        <result property="payChannelId"    column="pay_channel_id"    />
+        <result property="payChannelName"    column="pay_channel_name"    />
+        <result property="payChannelCode"    column="pay_channel_code"    />
+        <result property="paymentAmount"    column="payment_amount"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateReplenishmentVo">
+        select id, order_id, mch_id, mch_name, mch_order_no, pay_order_no, cha_lab_id, cha_lab_name, pay_channel_id, pay_channel_name, pay_channel_code, payment_amount, del_flag, create_by, create_time, update_by, update_time from operate_replenishment
+    </sql>
+
+    <select id="selectOperateReplenishmentList" parameterType="OperateReplenishment" resultMap="OperateReplenishmentResult">
+        <include refid="selectOperateReplenishmentVo"/>
+        where del_flag = '0'
+        <if test="mchId != null and mchId != ''">
+            AND mch_id = #{mchId}
+        </if>
+        <if test="payOrderNo != null  and payOrderNo != ''">
+            AND pay_order_no = #{payOrderNo}
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            AND create_time &gt;= #{params.beginTime}
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            AND create_time &lt;= #{params.endTime}
+        </if>
+        <if test="payChannelName != null  and payChannelName != ''">
+            AND pay_channel_name like concat('%', #{payChannelName}, '%')
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperateReplenishmentById" parameterType="Long" resultMap="OperateReplenishmentResult">
+        <include refid="selectOperateReplenishmentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateReplenishment" parameterType="OperateReplenishment" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_replenishment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="mchId != null">mch_id,</if>
+            <if test="mchName != null">mch_name,</if>
+            <if test="mchOrderNo != null">mch_order_no,</if>
+            <if test="payOrderNo != null">pay_order_no,</if>
+            <if test="chaLabId != null">cha_lab_id,</if>
+            <if test="chaLabName != null">cha_lab_name,</if>
+            <if test="payChannelId != null">pay_channel_id,</if>
+            <if test="payChannelName != null">pay_channel_name,</if>
+            <if test="payChannelCode != null">pay_channel_code,</if>
+            <if test="paymentAmount != null">payment_amount,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="mchId != null">#{mchId},</if>
+            <if test="mchName != null">#{mchName},</if>
+            <if test="mchOrderNo != null">#{mchOrderNo},</if>
+            <if test="payOrderNo != null">#{payOrderNo},</if>
+            <if test="chaLabId != null">#{chaLabId},</if>
+            <if test="chaLabName != null">#{chaLabName},</if>
+            <if test="payChannelId != null">#{payChannelId},</if>
+            <if test="payChannelName != null">#{payChannelName},</if>
+            <if test="payChannelCode != null">#{payChannelCode},</if>
+            <if test="paymentAmount != null">#{paymentAmount},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateReplenishment" parameterType="OperateReplenishment">
+        update operate_replenishment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="mchId != null">mch_id = #{mchId},</if>
+            <if test="mchName != null">mch_name = #{mchName},</if>
+            <if test="mchOrderNo != null">mch_order_no = #{mchOrderNo},</if>
+            <if test="payOrderNo != null">pay_order_no = #{payOrderNo},</if>
+            <if test="chaLabId != null">cha_lab_id = #{chaLabId},</if>
+            <if test="chaLabName != null">cha_lab_name = #{chaLabName},</if>
+            <if test="payChannelId != null">pay_channel_id = #{payChannelId},</if>
+            <if test="payChannelName != null">pay_channel_name = #{payChannelName},</if>
+            <if test="payChannelCode != null">pay_channel_code = #{payChannelCode},</if>
+            <if test="paymentAmount != null">payment_amount = #{paymentAmount},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateReplenishmentById" parameterType="Long">
+        delete from operate_replenishment where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateReplenishmentByIds" parameterType="String">
+        delete from operate_replenishment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

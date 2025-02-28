@@ -1,22 +1,27 @@
 package com.ruoyi.common.core.domain.entity;
 
-import java.util.Date;
-import java.util.List;
-import javax.validation.constraints.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
 import com.ruoyi.common.annotation.Excels;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.xss.Xss;
+import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户对象 sys_user
  * 
  * @author ruoyi
  */
+@Data
 public class SysUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -54,6 +59,22 @@ public class SysUser extends BaseEntity
 
     /** 密码 */
     private String password;
+
+    /** 飞机id */
+    private Long tgmId;
+
+    /** key */
+    private String userKey;
+
+    /** 是否绑定谷歌验证 */
+    private String isGoogle;
+
+    /** 登陆验证（0仅登陆密码验证 1登陆密码 + 谷歌验证） */
+    private String loginSet;
+
+    /** 00系统用户 11 mch 22 agent */
+    private String userType;
+
 
     /** 帐号状态（0正常 1停用） */
     @Excel(name = "帐号状态", readConverterExp = "0=正常,1=停用")

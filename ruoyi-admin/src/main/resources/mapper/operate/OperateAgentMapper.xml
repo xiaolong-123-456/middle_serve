@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateAgentMapper">
+    
+    <resultMap type="OperateAgent" id="OperateAgentResult">
+        <result property="id"    column="id"    />
+        <result property="agentName"    column="agent_name"    />
+        <result property="loginAct"    column="login_act"    />
+        <result property="loginPwd"    column="login_pwd"    />
+        <result property="payPwd"    column="pay_pwd"    />
+        <result property="agentKey"    column="agent_key"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="balance"    column="balance"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateAgentVo">
+        select id, agent_name, login_act, login_pwd, pay_pwd,agent_key, mobile,balance,user_id, status, del_flag, create_by, create_time, update_by, update_time from operate_agent
+    </sql>
+
+    <select id="selectOperateAgentList" parameterType="OperateAgent" resultMap="OperateAgentResult">
+        select id, agent_name, login_act, login_pwd, pay_pwd,agent_key, mobile,
+                IFNULL(balance, 0) as balance,
+               status, del_flag, create_by, create_time, update_by, update_time
+        from operate_agent
+        where del_flag = '0'
+        <if test="agentName != null  and agentName != ''">
+            and agent_name like concat('%', #{agentName}, '%')
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperateAgentById" parameterType="Long" resultMap="OperateAgentResult">
+        <include refid="selectOperateAgentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateAgent" parameterType="OperateAgent" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_agent
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="agentName != null">agent_name,</if>
+            <if test="loginAct != null">login_act,</if>
+            <if test="loginPwd != null">login_pwd,</if>
+            <if test="payPwd != null">pay_pwd,</if>
+            <if test="agentKey != null">agent_key,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="balance != null">balance,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="agentName != null">#{agentName},</if>
+            <if test="loginAct != null">#{loginAct},</if>
+            <if test="loginPwd != null">#{loginPwd},</if>
+            <if test="payPwd != null">#{payPwd},</if>
+            <if test="agentKey != null">#{agentKey},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateAgent" parameterType="OperateAgent">
+        update operate_agent
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="agentName != null">agent_name = #{agentName},</if>
+            <if test="loginAct != null">login_act = #{loginAct},</if>
+            <if test="loginPwd != null">login_pwd = #{loginPwd},</if>
+            <if test="payPwd != null">pay_pwd = #{payPwd},</if>
+            <if test="agentKey != null">agent_key = #{agentKey},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateAgentById" parameterType="Long">
+        delete from operate_agent where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateAgentByIds" parameterType="String">
+        delete from operate_agent where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectOperateAgentAll" resultMap="OperateAgentResult">
+        <include refid="selectOperateAgentVo"/>
+    </select>
+
+    <select id="selectOperateAgentByUserId" resultMap="OperateAgentResult">
+        <include refid="selectOperateAgentVo"/>
+        where user_id = #{userId}
+    </select>
+</mapper>

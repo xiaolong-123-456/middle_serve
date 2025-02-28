@@ -1,9 +1,11 @@
 package com.ruoyi.common.core.domain;
 
-import java.util.HashMap;
-import java.util.Objects;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.utils.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 操作消息提醒
@@ -22,6 +24,25 @@ public class AjaxResult extends HashMap<String, Object>
 
     /** 数据对象 */
     public static final String DATA_TAG = "data";
+
+
+//    /** 对接系统状态码 */
+//    public static final String CODE_TAG = "code";
+//
+//    /** 对接系统返回消息 */
+//    public static final String MSG_TAG = "msg";
+
+    /** 对接系统支付url */
+    public static final String PAYURL_TAG = "payUrl";
+
+    /** 对接系统支付url */
+    public static final String PAYPARAM_TAG = "payParam";
+
+    /** 对接系统本渠道订单号 */
+    public static final String PAYORDERNO_TAG = "payOrderNo";
+
+    /** 对接系统sign */
+    public static final String SIGN_TAG = "sign";
 
     /**
      * 初始化一个新创建的 AjaxResult 对象，使其表示一个空消息。
@@ -56,6 +77,102 @@ public class AjaxResult extends HashMap<String, Object>
         if (StringUtils.isNotNull(data))
         {
             super.put(DATA_TAG, data);
+        }
+    }
+
+    /**
+     * 用于系统数据对接 AjaxResult 对象（下单返回给商户）
+     *
+     * @param code 状态码
+     * @param msg 返回内容
+     * @param payUrl URL
+     * @param payOrderNo 本系统订单id
+     * @param sign 验签
+     */
+    public AjaxResult(String code, String msg, String payUrl, String payOrderNo, String sign)
+    {
+        super.put(CODE_TAG, code);
+        super.put(MSG_TAG, msg);
+        if (StringUtils.isNotNull(payUrl) && payUrl != null)
+        {
+            super.put(PAYURL_TAG, payUrl);
+        }
+        if (StringUtils.isNotNull(payOrderNo) && payOrderNo != null)
+        {
+            super.put(PAYORDERNO_TAG, payOrderNo);
+        }
+        if (StringUtils.isNotNull(sign) && sign != null)
+        {
+            super.put(SIGN_TAG, sign);
+        }
+    }
+
+    /**
+     * 用于系统数据对接 AjaxResult 对象（查询返回给商户）
+     *
+     * @param code 状态码
+     * @param msg 返回内容
+     * @param amount 金额
+     * @param mchId 商户id
+     * @param productId 产品id
+     * @param payOrderNo 本系统订单
+     * @param mchOrderNo 商户订单号
+     * @param status 订单状态
+     */
+    public AjaxResult(String code, String msg, Integer amount, String mchId,
+                      String productId,String payOrderNo,String mchOrderNo,Integer status)
+    {
+        super.put(CODE_TAG, code);
+        super.put(MSG_TAG, msg);
+        if (StringUtils.isNotNull(amount) && amount != null)
+        {
+            super.put("amount", amount);
+        }
+        if (StringUtils.isNotNull(mchId) && mchId != null)
+        {
+            super.put("mchId", mchId);
+        }
+        if (StringUtils.isNotNull(productId) && productId != null)
+        {
+            super.put("productId", productId);
+        }
+        if (StringUtils.isNotNull(mchOrderNo) && mchOrderNo != null)
+        {
+            super.put("mchOrderNo", mchOrderNo);
+        }
+        if (StringUtils.isNotNull(payOrderNo) && payOrderNo != null)
+        {
+            super.put(PAYORDERNO_TAG, payOrderNo);
+        }
+        if (StringUtils.isNotNull(status) && status != null)
+        {
+            super.put("status", status);
+        }
+    }
+
+    /**
+     * 用于系统数据对接 AjaxResult 对象（下单返回给商户）
+     *
+     * @param code 状态码
+     * @param msg 返回内容
+     * @param payOrderNo 本系统订单
+     * @param sign 验签
+     */
+    public AjaxResult(String code, String msg, Map<String, Object> payParam, String payOrderNo, String sign,String t)
+    {
+        super.put(CODE_TAG, code);
+        super.put(MSG_TAG, msg);
+        if (StringUtils.isNotNull(payParam) && payParam != null)
+        {
+            super.put(PAYPARAM_TAG, payParam);
+        }
+        if (StringUtils.isNotNull(payOrderNo) && payOrderNo != null)
+        {
+            super.put(PAYORDERNO_TAG, payOrderNo);
+        }
+        if (StringUtils.isNotNull(sign) && sign != null)
+        {
+            super.put(SIGN_TAG, sign);
         }
     }
 

@@ -23,6 +23,21 @@ public class LoginBody
     private String code;
 
     /**
+     * 用户ID
+     */
+    private String userId;
+
+    /**
+     * 系统登陆标识(商户、代理商、我)
+     */
+    private String systemType;
+
+    /**
+     * 系统跳转标识
+     */
+    private String skip;
+
+    /**
      * 唯一标识
      */
     private String uuid;
@@ -65,5 +80,29 @@ public class LoginBody
     public void setUuid(String uuid)
     {
         this.uuid = uuid;
+    }
+
+    public String getSystemType() {
+        return systemType;
+    }
+
+    public void setSystemType(String systemType) {
+        this.systemType = systemType;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getSkip() {
+        return skip;
+    }
+
+    public void setSkip(String skip) {
+        this.skip = skip;
     }
 }

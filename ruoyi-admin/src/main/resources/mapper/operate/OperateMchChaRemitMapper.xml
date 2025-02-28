@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateMchChaRemitMapper">
+    
+    <resultMap type="OperateMchChaRemit" id="OperateMchChaRemitResult">
+        <result property="id"    column="id"    />
+        <result property="mchId"    column="mch_id"    />
+        <result property="mchName"    column="mch_name"    />
+        <result property="chaLableId"    column="cha_lable_id"    />
+        <result property="chaLableName"    column="cha_lable_name"    />
+        <result property="remitAmount"    column="remit_amount"    />
+        <result property="remitDate"    column="remit_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateMchChaRemitVo">
+        select id, mch_id, mch_name, cha_lable_id, cha_lable_name, remit_amount, remit_date, remark, status, del_flag, create_by, create_time, update_by, update_time from operate_mch_cha_remit
+    </sql>
+
+    <select id="selectOperateMchChaRemitList" parameterType="OperateMchChaRemit" resultMap="OperateMchChaRemitResult">
+        <include refid="selectOperateMchChaRemitVo"/>
+        where del_flag = '0'
+        <if test="mchId != null and mchId != '' ">
+            and mch_id = #{mchId}
+        </if>
+        <if test="chaLableId != null and chaLableId != '' ">
+            and cha_lable_id = #{chaLableId}
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            AND remit_date &gt;= #{params.beginTime}
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            AND remit_date &lt;= #{params.endTime}
+        </if>
+        <if test="status != null and status != ''">
+            and status = #{status}
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperateMchChaRemitById" parameterType="Long" resultMap="OperateMchChaRemitResult">
+        <include refid="selectOperateMchChaRemitVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateMchChaRemit" parameterType="OperateMchChaRemit" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_mch_cha_remit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mchId != null">mch_id,</if>
+            <if test="mchName != null">mch_name,</if>
+            <if test="chaLableId != null">cha_lable_id,</if>
+            <if test="chaLableName != null">cha_lable_name,</if>
+            <if test="remitAmount != null">remit_amount,</if>
+            <if test="remitDate != null">remit_date,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mchId != null">#{mchId},</if>
+            <if test="mchName != null">#{mchName},</if>
+            <if test="chaLableId != null">#{chaLableId},</if>
+            <if test="chaLableName != null">#{chaLableName},</if>
+            <if test="remitAmount != null">#{remitAmount},</if>
+            <if test="remitDate != null">#{remitDate},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateMchChaRemit" parameterType="OperateMchChaRemit">
+        update operate_mch_cha_remit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mchId != null">mch_id = #{mchId},</if>
+            <if test="mchName != null">mch_name = #{mchName},</if>
+            <if test="chaLableId != null">cha_lable_id = #{chaLableId},</if>
+            <if test="chaLableName != null">cha_lable_name = #{chaLableName},</if>
+            <if test="remitAmount != null">remit_amount = #{remitAmount},</if>
+            <if test="remitDate != null">remit_date = #{remitDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateMchChaRemitById" parameterType="Long">
+        delete from operate_mch_cha_remit where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateMchChaRemitByIds" parameterType="String">
+        delete from operate_mch_cha_remit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

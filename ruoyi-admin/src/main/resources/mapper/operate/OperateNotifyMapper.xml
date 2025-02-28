@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateNotifyMapper">
+    
+    <resultMap type="OperateNotify" id="OperateNotifyResult">
+        <result property="id"    column="id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="mchId"    column="mch_id"    />
+        <result property="mchName"    column="mch_name"    />
+        <result property="mchOrderNo"    column="mch_order_no"    />
+        <result property="payOrderNo"    column="pay_order_no"    />
+        <result property="orderType"    column="order_type"    />
+        <result property="notifyStatus"    column="notify_status"    />
+        <result property="notifyTime"    column="notify_time"    />
+        <result property="notifyDate"    column="notify_date"    />
+        <result property="notifyUrl"    column="notify_url"    />
+        <result property="mchMsg"    column="mch_msg"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateNotifyVo">
+        select id, order_id, mch_id, mch_name, mch_order_no, pay_order_no, order_type, notify_status, notify_time, notify_date, notify_url,mch_msg, status, del_flag, create_by, create_time, update_by, update_time from operate_notify
+    </sql>
+
+    <select id="selectOperateNotifyList" parameterType="OperateNotify" resultMap="OperateNotifyResult">
+        <include refid="selectOperateNotifyVo"/>
+        where del_flag = '0'
+        <if test="payOrderNo != null  and payOrderNo != ''">
+         and pay_order_no = #{payOrderNo}
+        </if>
+        <if test="notifyStatus != null and notifyStatus != ''">
+            AND notify_status = #{notifyStatus}
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            AND notify_date &gt;= #{params.beginTime}
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            AND notify_date &lt;= #{params.endTime}
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperateNotifyById" parameterType="Long" resultMap="OperateNotifyResult">
+        <include refid="selectOperateNotifyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateNotify" parameterType="OperateNotify" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_notify
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="mchId != null">mch_id,</if>
+            <if test="mchName != null">mch_name,</if>
+            <if test="mchOrderNo != null">mch_order_no,</if>
+            <if test="payOrderNo != null">pay_order_no,</if>
+            <if test="orderType != null">order_type,</if>
+            <if test="notifyStatus != null">notify_status,</if>
+            <if test="notifyTime != null">notify_time,</if>
+            <if test="notifyDate != null">notify_date,</if>
+            <if test="notifyUrl != null">notify_url,</if>
+            <if test="mchMsg != null">mch_msg,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="mchId != null">#{mchId},</if>
+            <if test="mchName != null">#{mchName},</if>
+            <if test="mchOrderNo != null">#{mchOrderNo},</if>
+            <if test="payOrderNo != null">#{payOrderNo},</if>
+            <if test="orderType != null">#{orderType},</if>
+            <if test="notifyStatus != null">#{notifyStatus},</if>
+            <if test="notifyTime != null">#{notifyTime},</if>
+            <if test="notifyDate != null">#{notifyDate},</if>
+            <if test="notifyUrl != null">#{notifyUrl},</if>
+            <if test="mchMsg != null">#{mchMsg},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateNotify" parameterType="OperateNotify">
+        update operate_notify
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="mchId != null">mch_id = #{mchId},</if>
+            <if test="mchName != null">mch_name = #{mchName},</if>
+            <if test="mchOrderNo != null">mch_order_no = #{mchOrderNo},</if>
+            <if test="payOrderNo != null">pay_order_no = #{payOrderNo},</if>
+            <if test="orderType != null">order_type = #{orderType},</if>
+            <if test="notifyStatus != null">notify_status = #{notifyStatus},</if>
+            <if test="notifyTime != null">notify_time = #{notifyTime},</if>
+            <if test="notifyDate != null">notify_date = #{notifyDate},</if>
+            <if test="notifyUrl != null">notify_url = #{notifyUrl},</if>
+            <if test="mchMsg != null">mch_msg = #{mchMsg},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateNotifyById" parameterType="Long">
+        delete from operate_notify where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateNotifyByIds" parameterType="String">
+        delete from operate_notify where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectOperateNotifyByOrderId" parameterType="Long" resultMap="OperateNotifyResult">
+        <include refid="selectOperateNotifyVo"/>
+        where del_flag = '0' and order_id = #{orderId}
+    </select>
+
+</mapper>

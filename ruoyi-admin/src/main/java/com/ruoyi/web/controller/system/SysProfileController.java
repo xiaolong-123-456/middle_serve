@@ -1,14 +1,5 @@
 package com.ruoyi.web.controller.system;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.core.controller.BaseController;
@@ -21,7 +12,14 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
 import com.ruoyi.framework.web.service.TokenService;
+import com.ruoyi.operate.domain.OperateAgent;
+import com.ruoyi.operate.domain.OperateMerchant;
+import com.ruoyi.operate.service.IOperateAgentService;
+import com.ruoyi.operate.service.IOperateMerchantService;
 import com.ruoyi.system.service.ISysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 个人信息 业务处理
@@ -37,6 +35,12 @@ public class SysProfileController extends BaseController
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private IOperateMerchantService operateMerchantService;
+
+    @Autowired
+    private IOperateAgentService operateAgentService;
 
     /**
      * 个人信息
@@ -100,9 +104,22 @@ public class SysProfileController extends BaseController
         {
             return error("新密码不能与旧密码相同");
         }
+        String mchOrAgentPassword = newPassword;
         newPassword = SecurityUtils.encryptPassword(newPassword);
         if (userService.resetUserPwd(userName, newPassword) > 0)
         {
+
+            //修改商户和代理商的密码(客户使用端暂时没开放)
+            OperateMerchant operateMerchant = operateMerchantService.queryOperateMerchantByUserId(loginUser.getUserId());
+            if(operateMerchant != null){
+                operateMerchant.setLoginPwd(mchOrAgentPassword);
+                operateMerchantService.updateOperateMerchant(operateMerchant);
+            }else{
+                OperateAgent operateAgent = operateAgentService.queryOperateAgentByUserId(loginUser.getUserId());
+                operateAgent.setLoginPwd(mchOrAgentPassword);
+                operateAgentService.updateOperateAgent(operateAgent);
+            }
+
             // 更新缓存用户密码
             loginUser.getUser().setPassword(newPassword);
             tokenService.setLoginUser(loginUser);

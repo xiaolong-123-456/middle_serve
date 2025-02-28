@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateAgentProductMapper">
+    
+    <resultMap type="OperateAgentProduct" id="OperateAgentProductResult">
+        <result property="id"    column="id"    />
+        <result property="agentId"    column="agent_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="rate"    column="rate"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateAgentProductVo">
+        select id, agent_id, product_id, rate, status, del_flag, create_by, create_time, update_by, update_time from operate_agent_product
+    </sql>
+
+    <select id="selectOperateAgentProductList" parameterType="OperateAgentProduct" resultMap="OperateAgentProductResult">
+        <include refid="selectOperateAgentProductVo"/>
+        where del_flag = '0'
+        <if test="agentId != null and agentId != '' ">
+            and agent_id = #{agentId}
+        </if>
+        <if test="agentId != null and agentId != '' ">
+         and product_id = #{productId}
+        </if>
+        <if test="rate != null and rate != '' ">
+         and rate = #{rate}
+        </if>
+        <if test="status != null and status != ''">
+         and status = #{status}
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperateAgentProductById" parameterType="Long" resultMap="OperateAgentProductResult">
+        <include refid="selectOperateAgentProductVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateAgentProduct" parameterType="OperateAgentProduct" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_agent_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="agentId != null">agent_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="rate != null">rate,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="agentId != null">#{agentId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="rate != null">#{rate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateAgentProduct" parameterType="OperateAgentProduct">
+        update operate_agent_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="agentId != null">agent_id = #{agentId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="rate != null">rate = #{rate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateAgentProductById" parameterType="Long">
+        delete from operate_agent_product where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateAgentProductByIds" parameterType="String">
+        delete from operate_agent_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAgePro" resultMap="OperateAgentProductResult">
+        select
+        id,
+        agent_id,
+        product_id,
+        rate,
+        status
+        from operate_agent_product
+        where del_flag = '0'
+        <if test="agentId != '' and agentId != null">
+            and agent_id = #{agentId}
+        </if>
+        <if test="productId != '' and productId != null">
+            and product_id = #{productId}
+        </if>
+    </select>
+
+    <update id="updateByAgentIdPro">
+        update operate_agent_product
+        set del_flag = '2'
+        where del_flag = '0'
+        <if test="agentId != '' and agentId != null">
+            and agent_id = #{agentId}
+        </if>
+        <if test="productId != '' and productId != null">
+            and product_id = #{productId}
+        </if>
+    </update>
+
+    <update id="updateRateByAgentIdPro">
+        update operate_agent_product
+        set rate = #{agentRate}
+        where del_flag = '0'
+        <if test="agentId != '' and agentId != null">
+            and agent_id = #{agentId}
+        </if>
+        <if test="productId != '' and productId != null">
+            and product_id = #{productId}
+        </if>
+    </update>
+</mapper>

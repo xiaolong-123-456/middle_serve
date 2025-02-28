@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateMerchantMapper">
+    
+    <resultMap type="OperateMerchant" id="OperateMerchantResult">
+        <result property="id"    column="id"    />
+        <result property="mchName"    column="mch_name"    />
+        <result property="loginAct"    column="login_act"    />
+        <result property="loginPwd"    column="login_pwd"    />
+        <result property="payPwd"    column="pay_pwd"    />
+        <result property="mchType"    column="mch_type"    />
+        <result property="tgmGroup"    column="tgm_group"    />
+        <result property="tgmContact"    column="tgm_contact"    />
+        <result property="agentId"    column="agent_id"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="mchKey"    column="mch_key"    />
+        <result property="balance"    column="balance"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateMerchantVo">
+        select id, mch_name, login_act, login_pwd, pay_pwd, mch_type, tgm_group, tgm_contact, agent_id, mobile, mch_key,balance,user_id, status, del_flag, create_by, create_time, update_by, update_time from operate_merchant
+    </sql>
+
+    <select id="selectOperateMerchantList" resultType="com.ruoyi.operate.dto.OperateMerchantDTO">
+        select
+            a.id,
+            a.mch_name as mchName,
+            a.login_act as loginAct,
+            a.login_pwd as loginPwd,
+            a.pay_pwd as payPwd,
+            a.mch_type as mchType,
+            a.tgm_group as tgmGroup,
+            a.tgm_contact as tgmContact,
+            a.agent_id as agentId,
+            a.mobile as mobile,
+            a.mch_key as mchKey,
+            IFNULL(a.balance, 0) as balance,
+            a.status as status,
+            a.del_flag as delFlag,
+            a.create_by as createBy,
+            a.create_time as createTime,
+            a.update_by as updateBy,
+            a.update_time as updateTime,
+            b.agent_name as agentName
+        from operate_merchant a
+        left join operate_agent b on a.agent_id = b.id
+        where a.del_flag = '0'
+        <if test="mchName != null  and mchName != ''">
+            and a.mch_name like concat('%', #{mchName}, '%')
+        </if>
+        <if test="agentId != null  and agentId != ''">
+            and a.agent_id = #{agentId}
+        </if>
+        <if test="status != null  and status != ''">
+            and a.status = #{status}
+        </if>
+        <if test="mchType != null  and mchType != ''">
+            and a.mch_type = #{mchType}
+        </if>
+        <if test="mchTypeList != null  and mchTypeList != ''">
+            and a.mch_type in
+            <foreach item="mchType" collection="mchTypeList" open="(" separator="," close=")">
+                #{mchType}
+            </foreach>
+        </if>
+        order by a.create_time desc
+    </select>
+    
+    <select id="selectOperateMerchantById" parameterType="Long" resultMap="OperateMerchantResult">
+        <include refid="selectOperateMerchantVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateMerchant" parameterType="OperateMerchant" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_merchant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mchName != null">mch_name,</if>
+            <if test="loginAct != null">login_act,</if>
+            <if test="loginPwd != null">login_pwd,</if>
+            <if test="payPwd != null">pay_pwd,</if>
+            <if test="mchType != null">mch_type,</if>
+            <if test="tgmGroup != null">tgm_group,</if>
+            <if test="tgmContact != null">tgm_contact,</if>
+            <if test="agentId != null">agent_id,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="mchKey != null">mch_key,</if>
+            <if test="balance != null">balance,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mchName != null">#{mchName},</if>
+            <if test="loginAct != null">#{loginAct},</if>
+            <if test="loginPwd != null">#{loginPwd},</if>
+            <if test="payPwd != null">#{payPwd},</if>
+            <if test="mchType != null">#{mchType},</if>
+            <if test="tgmGroup != null">#{tgmGroup},</if>
+            <if test="tgmContact != null">#{tgmContact},</if>
+            <if test="agentId != null">#{agentId},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="mchKey != null">#{mchKey},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateMerchant" parameterType="OperateMerchant">
+        update operate_merchant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mchName != null">mch_name = #{mchName},</if>
+            <if test="loginAct != null">login_act = #{loginAct},</if>
+            <if test="loginPwd != null">login_pwd = #{loginPwd},</if>
+            <if test="payPwd != null">pay_pwd = #{payPwd},</if>
+            <if test="mchType != null">mch_type = #{mchType},</if>
+            <if test="tgmGroup != null">tgm_group = #{tgmGroup},</if>
+            <if test="tgmContact != null">tgm_contact = #{tgmContact},</if>
+            <if test="agentId != null">agent_id = #{agentId},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="mchKey != null">mch_key = #{mchKey},</if>
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateMerchantById" parameterType="Long">
+        delete from operate_merchant where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateMerchantByIds" parameterType="String">
+        delete from operate_merchant where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectMchAccountList" resultType="com.ruoyi.operate.dto.MchAccountDTO">
+        select
+        a.id as mchId,
+        a.mch_name as mchName,
+        IFNULL(a.balance,0.00) as balance,
+
+        IFNULL((select IFNULL(sum(b.mch_act_receipt), 0.00)
+         from operate_order b
+         where b.del_flag = '0' and b.payment_status = '4' and b.mch_id = a.id
+         and DATE_FORMAT( b.create_time, '%Y-%m-%d' ) = DATE_FORMAT( now(), '%Y-%m-%d' )
+         group by b.mch_id),0.00) as todayBalance,
+
+        a.update_time as updateTime
+        from operate_merchant a
+        where a.del_flag = '0' and a.status = '0'
+        <if test="mchId != '' and mchId != null">
+            and a.id = #{mchId}
+        </if>
+    </select>
+
+    <select id="selectMchByGroupId" parameterType="Long" resultMap="OperateMerchantResult">
+        <include refid="selectOperateMerchantVo"/>
+        where tgm_group = #{tgmGroup}
+    </select>
+
+    <select id="selectOperateMerchantByUserId" resultMap="OperateMerchantResult">
+        <include refid="selectOperateMerchantVo"/>
+        where user_id = #{userId}
+    </select>
+</mapper>

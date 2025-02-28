@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperatePayChannelMapper">
+    
+    <resultMap type="OperatePayChannel" id="OperatePayChannelResult">
+        <result property="id"    column="id"    />
+        <result property="chaCode"    column="cha_code"    />
+        <result property="chaName"    column="cha_name"    />
+        <result property="chaRate"    column="cha_rate"    />
+        <result property="chaLabId"    column="cha_lab_id"    />
+        <result property="riskControlId"    column="risk_control_id"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="chaType"    column="cha_type"    />
+    </resultMap>
+
+    <sql id="selectOperatePayChannelVo">
+        select id, cha_code, cha_name, cha_rate, cha_lab_id, risk_control_id, remark, status, del_flag, create_by, create_time, update_by, update_time,cha_type from operate_pay_channel
+    </sql>
+
+    <select id="selectOperatePayChannelList" resultType="com.ruoyi.operate.dto.OperatePayChannelDTO">
+        select
+            a.id,
+            a.cha_code as chaCode,
+            a.cha_name as chaName,
+            CONCAT(a.cha_rate,'%') as chaRate,
+            CONCAT_WS('_', b.cha_lab_code, a.cha_code) as portCode,
+            a.cha_lab_id as chaLabId,
+            a.risk_control_id as riskControlId,
+            b.cha_lab_name as chaLabName,
+            a.remark as remark,
+            a.status as status,
+            a.del_flag as delFlag,
+            a.create_by as createBy,
+            a.create_time as createTime,
+            a.update_by as updateBy,
+            a.update_time as updateTime
+        from operate_pay_channel a
+        left join operate_channel_label b on a.cha_lab_id = b.id
+        where a.del_flag = '0'
+        <if test="chaCode != null  and chaCode != ''">
+            and a.cha_code like concat('%', #{chaCode}, '%')
+        </if>
+        <if test="chaName != null  and chaName != ''">
+            and a.cha_name like concat('%', #{chaName}, '%')
+        </if>
+        <if test="chaLabId != null ">
+            and a.cha_lab_id = #{chaLabId}
+        </if>
+        <if test="status != null  and status != ''">
+            and a.status = #{status}
+        </if>
+        order by a.create_time desc
+    </select>
+    
+    <select id="selectOperatePayChannelById" parameterType="Long" resultMap="OperatePayChannelResult">
+        <include refid="selectOperatePayChannelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperatePayChannel" parameterType="OperatePayChannel" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_pay_channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chaCode != null and chaCode != ''">cha_code,</if>
+            <if test="chaName != null and chaName != ''">cha_name,</if>
+            <if test="chaRate != null">cha_rate,</if>
+            <if test="chaLabId != null">cha_lab_id,</if>
+            <if test="riskControlId != null">risk_control_id,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="chaCode != null and chaCode != ''">#{chaCode},</if>
+            <if test="chaName != null and chaName != ''">#{chaName},</if>
+            <if test="chaRate != null">#{chaRate},</if>
+            <if test="chaLabId != null">#{chaLabId},</if>
+            <if test="riskControlId != null">#{riskControlId},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperatePayChannel" parameterType="OperatePayChannel">
+        update operate_pay_channel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="chaCode != null and chaCode != ''">cha_code = #{chaCode},</if>
+            <if test="chaName != null and chaName != ''">cha_name = #{chaName},</if>
+            <if test="chaRate != null">cha_rate = #{chaRate},</if>
+            <if test="chaLabId != null">cha_lab_id = #{chaLabId},</if>
+            <if test="riskControlId != null">risk_control_id = #{riskControlId},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperatePayChannelById" parameterType="Long">
+        delete from operate_pay_channel where id = #{id}
+    </delete>
+
+    <delete id="deleteOperatePayChannelByIds" parameterType="String">
+        delete from operate_pay_channel where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectPayChannel" resultType="com.ruoyi.operate.dto.OperatePayProjectInfoDTO">
+        select
+            null as payProjectInfoId,
+            a.id,
+            a.cha_name as chaName,
+            a.cha_code as chaCode,
+            concat(a.cha_rate,'%') as chaRate,
+            1 as sort,
+            a.risk_control_id as riskControlId,
+            a.status,
+            concat('最大:', b.max_amount, ',最小:', b.min_amount,IF(b.amount_type = '0', ',连续任意金额', ',固定金额')) as riskInfo,
+            c.cha_lab_name as chaLabName
+        from operate_pay_channel a
+        left join operate_risk_control b on a.risk_control_id = b.id
+        left join operate_channel_label c on a.cha_lab_id = c.id
+        where a.del_flag = '0' and a.status = '0' and c.status = '0'
+        <if test="chaLabId != '' and chaLabId != null">
+            and a.cha_lab_id = #{chaLabId}
+        </if>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectRiskByPayChaId" resultType="com.ruoyi.operate.dto.OperateRiskControlDTO">
+        select * from operate_risk_control
+        where id = #{id}
+        and del_flag = '0'
+        order by create_time desc
+    </select>
+
+    <update id="forbidOrEnableByIds">
+        update operate_pay_channel set status = #{type}
+        where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperatePayProductInfoMapper">
+    
+    <resultMap type="OperatePayProductInfo" id="OperatePayProductInfoResult">
+        <result property="id"    column="id"    />
+        <result property="payProductId"    column="pay_product_id"    />
+        <result property="payChannelId"    column="pay_channel_id"    />
+        <result property="sort"    column="sort"    />
+        <result property="riskControlId"    column="risk_control_id"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperatePayProductInfoVo">
+        select id, pay_product_id, pay_channel_id, sort, risk_control_id, status, del_flag, create_by, create_time, update_by, update_time from operate_pay_product_info
+    </sql>
+
+    <select id="selectOperatePayProductInfoList" parameterType="OperatePayProductInfo" resultMap="OperatePayProductInfoResult">
+        <include refid="selectOperatePayProductInfoVo"/>
+        where del_flag = '0'
+        <if test="payProductId != null ">
+            and pay_product_id = #{payProductId}
+        </if>
+        <if test="payChannelId != null ">
+            and pay_channel_id = #{payChannelId}
+        </if>
+        <if test="sort != null ">
+            and sort = #{sort}
+        </if>
+        <if test="riskControlId != null ">
+            and risk_control_id = #{riskControlId}
+        </if>
+        <if test="status != null  and status != ''">
+            and status = #{status}
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperatePayProductInfoById" parameterType="Long" resultMap="OperatePayProductInfoResult">
+        <include refid="selectOperatePayProductInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperatePayProductInfo" parameterType="OperatePayProductInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_pay_product_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="payProductId != null">pay_product_id,</if>
+            <if test="payChannelId != null">pay_channel_id,</if>
+            <if test="sort != null">sort,</if>
+            <if test="riskControlId != null">risk_control_id,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="payProductId != null">#{payProductId},</if>
+            <if test="payChannelId != null">#{payChannelId},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="riskControlId != null">#{riskControlId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperatePayProductInfo" parameterType="OperatePayProductInfo">
+        update operate_pay_product_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="payProductId != null">pay_product_id = #{payProductId},</if>
+            <if test="payChannelId != null">pay_channel_id = #{payChannelId},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="riskControlId != null">risk_control_id = #{riskControlId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where pay_channel_id = #{payChannelId} and del_flag = '0'
+    </update>
+
+    <delete id="deleteOperatePayProductInfoById" parameterType="Long">
+        delete from operate_pay_product_info where id = #{id}
+    </delete>
+
+    <delete id="deleteOperatePayProductInfoByIds" parameterType="String">
+        delete from operate_pay_product_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectListByPayProductId" resultType="com.ruoyi.operate.dto.OperatePayProjectInfoDTO">
+        select
+        a.id as payProjectInfoId,
+        b.id,
+        b.cha_name as chaName,
+        concat(b.cha_rate,'%') as chaRate,
+        a.sort as sort,
+        a.risk_control_id as riskControlId,
+        concat('最大:', c.max_amount, ', 最小:', c.min_amount,IF(c.amount_type = '0', ',连续任意金额', ',固定金额')) as riskInfo
+        from operate_pay_product_info a
+        left join operate_pay_channel b on a.pay_channel_id = b.id
+        left join operate_risk_control c on a.risk_control_id = c.id
+        where a.del_flag = '0'
+        <if test="payProductId != '' and payProductId != null">
+            and a.pay_product_id = #{payProductId}
+        </if>
+        order by a.create_time desc
+    </select>
+
+    <update id="updateByPayChaId">
+        update operate_pay_product_info set risk_control_id = #{riskControlId} where pay_channel_id = #{payChaId}
+    </update>
+
+    <update id="updateByIds">
+        update operate_pay_product_info set del_flag = '2' where pay_product_id = #{payProductId}
+        and pay_channel_id not in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="updateByProIds">
+        update operate_pay_product_info set del_flag = '2' where pay_channel_id = #{payChaId}
+        and pay_product_id not in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="deleteByParams">
+        update operate_pay_product_info set del_flag = '2'
+        where del_flag = '0'
+        <if test="payProductId != '' and payProductId != null">
+            and pay_product_id = #{payProductId}
+        </if>
+        <if test="payChaId != '' and payChaId != null">
+            and pay_channel_id = #{payChaId}
+        </if>
+    </update>
+
+    <select id="selectDataListByPayChaId" resultType="java.lang.Long">
+        select
+        pay_product_id
+        from operate_pay_product_info
+        where del_flag = '0'
+        <if test="payChaId != '' and payChaId != null">
+            and pay_channel_id = #{payChaId}
+        </if>
+    </select>
+
+
+    <select id="selectChaByProId" resultType="com.ruoyi.operate.dto.RelevanceDTO">
+        select
+        a.sort as sort,
+        a.risk_control_id as riskControlId,
+        b.id as payChaId,
+        b.cha_code as payChaCode,
+        b.cha_name as payChaName,
+        b.cha_rate as chaRate,
+        b.cha_type as chaType,
+        c.id as chaLabId,
+        c.cha_lab_name as chaLabName
+        from operate_pay_product_info a
+        left join operate_pay_channel b on a.pay_channel_id = b.id
+        left join operate_channel_label c on b.cha_lab_id = c.id
+        where a.del_flag = '0' and b.del_flag = '0' and c.del_flag = '0' and a.sort != 0
+        and a.status = '0' and b.status = '0' and c.status = '0'
+        <if test="payProductId != '' and payProductId != null">
+            and a.pay_product_id = #{payProductId}
+        </if>
+        order by a.sort desc
+    </select>
+
+</mapper>

@@ -1,12 +1,5 @@
 package com.ruoyi.framework.web.service;
 
-import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
@@ -14,12 +7,9 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.exception.user.BlackListException;
-import com.ruoyi.common.exception.user.CaptchaException;
-import com.ruoyi.common.exception.user.CaptchaExpireException;
-import com.ruoyi.common.exception.user.UserNotExistsException;
-import com.ruoyi.common.exception.user.UserPasswordNotMatchException;
+import com.ruoyi.common.exception.user.*;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.GoogleAuthenticator;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ip.IpUtils;
@@ -28,6 +18,14 @@ import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * 登录校验方法
@@ -52,6 +50,9 @@ public class SysLoginService
     @Autowired
     private ISysConfigService configService;
 
+    @Autowired
+    private ISysUserService sysUserService;
+
     /**
      * 登录验证
      * 
@@ -61,10 +62,38 @@ public class SysLoginService
      * @param uuid 唯一标识
      * @return 结果
      */
-    public String login(String username, String password, String code, String uuid)
+    public String login(String username, String password, String code,
+                        String uuid,String userId,String systemType,String skip)
     {
-        // 验证码校验
-        validateCaptcha(username, code, uuid);
+        // 验证码校验(改为谷歌验证码)
+//        validateCaptcha(username, code, uuid);
+        SysUser sysUser2 = sysUserService.selectUserById(Long.valueOf(userId));
+        if(StringUtils.isEmpty(skip) || !skip.equals("0")){
+            if(sysUser2.getLoginSet().equals("1") && sysUser2.getIsGoogle().equals("1")){
+                if(StringUtils.isNotEmpty(code)){
+                    boolean result = GoogleAuthenticator.checkCode(sysUser2.getUserKey(), Long.parseLong(code), System.currentTimeMillis());
+                    if(!result){
+                        throw new CaptchaException();
+                    }
+                }else{
+                    throw new CaptchaIsNullException();
+                }
+            }
+        }
+
+
+        //区分me mch agent登陆
+        SysUser sysUser = userService.selectUserByName(username);
+        if(systemType.equals("me") && !sysUser.getUserType().equals("00")){
+            throw new UserPasswordNotMatchException();
+        }else if(systemType.equals("mch") && !sysUser.getUserType().equals("11")){
+            throw new UserPasswordNotMatchException();
+        }else if(systemType.equals("agent") && !sysUser.getUserType().equals("22")){
+            throw new UserPasswordNotMatchException();
+        }else if(userId.equals("") || sysUser.getUserId().equals(userId)){
+            throw new UserPasswordNotMatchException();
+        }
+
         // 登录前置校验
         loginPreCheck(username, password);
         // 用户验证
@@ -96,6 +125,7 @@ public class SysLoginService
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
+        loginUser.setSystemType(systemType);
         // 生成token
         return tokenService.createToken(loginUser);
     }

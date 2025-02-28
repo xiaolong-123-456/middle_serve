@@ -1,21 +1,5 @@
 package com.ruoyi.web.controller.system;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -24,13 +8,23 @@ import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.GoogleAuthenticator;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.service.ISysDeptService;
-import com.ruoyi.system.service.ISysPostService;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.domain.SysUserRole;
+import com.ruoyi.system.mapper.SysUserRoleMapper;
+import com.ruoyi.system.service.*;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户信息
@@ -53,6 +47,12 @@ public class SysUserController extends BaseController
     @Autowired
     private ISysPostService postService;
 
+    @Autowired
+    private ISysRobatService sysRobatService;
+
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
+
     /**
      * 获取用户列表
      */
@@ -62,6 +62,15 @@ public class SysUserController extends BaseController
     {
         startPage();
         List<SysUser> list = userService.selectUserList(user);
+        List<SysRole> roles = roleService.selectRoleAll();
+        for(SysUser sysUser :list){
+            List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectUserRoleByUserId(sysUser.getUserId());
+            List<SysRole> collect = roles.stream()
+                    .filter(r -> sysUserRoles.stream().anyMatch(item -> r.getRoleId().equals(item.getRoleId())))
+                    .collect(Collectors.toList());
+
+            sysUser.setRoles(collect);
+        }
         return getDataTable(list);
     }
 
@@ -140,7 +149,12 @@ public class SysUserController extends BaseController
         }
         user.setCreateBy(getUsername());
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
-        return toAjax(userService.insertUser(user));
+        //key
+        String secretKey = GoogleAuthenticator.getSecretKey();
+        user.setUserKey(secretKey);
+        int result = userService.insertUser(user);
+
+        return toAjax(result);
     }
 
     /**
@@ -253,4 +267,83 @@ public class SysUserController extends BaseController
     {
         return success(deptService.selectDeptTreeList(dept));
     }
+
+    /**
+     * 获取当前登陆的用户
+     */
+    @GetMapping("/getUserInfo")
+    public AjaxResult getUserInfo()
+    {
+        Long userId = getLoginUser().getUserId();
+        AjaxResult ajax = AjaxResult.success();
+        SysUser sysUser = userService.selectUserById(userId);
+        ajax.put("isGoogle", sysUser.getIsGoogle());
+        ajax.put("loginSet", sysUser.getLoginSet());
+        ajax.put("userId", userId);
+        return ajax;
+    }
+
+    /**
+     * 获取当前登陆的用户
+     */
+    @GetMapping("/getUserByName")
+    public AjaxResult getUserByName(@RequestParam("userName") String userName)
+    {
+        AjaxResult ajax = AjaxResult.success();
+        SysUser sysUser = userService.selectUserByName(userName);
+        if(sysUser != null && sysUser.getUserType().equals("00")){
+            ajax.put("isGoogle", sysUser.getIsGoogle());
+            ajax.put("loginSet", sysUser.getLoginSet());
+            ajax.put("userId", sysUser.getUserId());
+        }else{
+            ajax.put("isGoogle", "2");
+            ajax.put("loginSet", "2");
+            ajax.put("userId", "");
+        }
+
+        return ajax;
+    }
+
+    /**
+     * (商户)获取当前登陆的用户
+     */
+    @GetMapping("/getMchUserByName")
+    public AjaxResult getMchUserByName(@RequestParam("userName") String userName)
+    {
+        AjaxResult ajax = AjaxResult.success();
+        SysUser sysUser = userService.selectUserByName(userName);
+        if(sysUser != null && sysUser.getUserType().equals("11")){
+            ajax.put("isGoogle", sysUser.getIsGoogle());
+            ajax.put("loginSet", sysUser.getLoginSet());
+            ajax.put("userId", sysUser.getUserId());
+        }else{
+            ajax.put("isGoogle", "2");
+            ajax.put("loginSet", "2");
+            ajax.put("userId", "");
+        }
+
+        return ajax;
+    }
+
+    /**
+     * (代理商)获取当前登陆的用户
+     */
+    @GetMapping("/getAgentUserByName")
+    public AjaxResult getAgentUserByName(@RequestParam("userName") String userName)
+    {
+        AjaxResult ajax = AjaxResult.success();
+        SysUser sysUser = userService.selectUserByName(userName);
+        if(sysUser != null && sysUser.getUserType().equals("22")){
+            ajax.put("isGoogle", sysUser.getIsGoogle());
+            ajax.put("loginSet", sysUser.getLoginSet());
+            ajax.put("userId", sysUser.getUserId());
+        }else{
+            ajax.put("isGoogle", "2");
+            ajax.put("loginSet", "2");
+            ajax.put("userId", "");
+        }
+
+        return ajax;
+    }
+
 }

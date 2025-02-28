@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.operate.mapper.OperateChannelLabelMapper">
+    
+    <resultMap type="OperateChannelLabel" id="OperateChannelLabelResult">
+        <result property="id"    column="id"    />
+        <result property="chaLabCode"    column="cha_lab_code"    />
+        <result property="chaLabName"    column="cha_lab_name"    />
+        <result property="remark"    column="remark"    />
+        <result property="tgmGroup"    column="tgm_group"    />
+        <result property="tgmContact"    column="tgm_contact"    />
+        <result property="informIp"    column="inform_ip"    />
+        <result property="configDescribe"    column="config_describe"    />
+        <result property="mchId"    column="mch_id"    />
+        <result property="mchKey"    column="mch_key"    />
+        <result property="payType"    column="pay_type"    />
+        <result property="payWay"    column="pay_way"    />
+        <result property="gateway"    column="gateway"    />
+        <result property="buyPort"    column="buy_port"    />
+        <result property="queryPort"    column="query_port"    />
+        <result property="buyParams"    column="buy_params"    />
+        <result property="checkParams"    column="check_params"    />
+        <result property="returnParams"    column="return_params"    />
+        <result property="notifyParams"    column="notify_params"    />
+        <result property="queryRenParams"    column="query_ren_params"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOperateChannelLabelVo">
+        select id, cha_lab_code, cha_lab_name, remark, tgm_group, tgm_contact, inform_ip, config_describe, mch_id, mch_key, pay_type, pay_way, gateway, buy_port, query_port,buy_params,check_params,return_params,notify_params,query_ren_params, status, del_flag, create_by, create_time, update_by, update_time from operate_channel_label
+    </sql>
+
+    <select id="selectOperateChannelLabelList" parameterType="OperateChannelLabel" resultMap="OperateChannelLabelResult">
+        <include refid="selectOperateChannelLabelVo"/>
+        where del_flag = '0'
+        <if test="chaLabName != null  and chaLabName != ''">
+            and cha_lab_name like concat('%', #{chaLabName}, '%')
+        </if>
+        <if test="payWay != null  and payWay != ''">
+            and pay_way = #{payWay}
+        </if>
+        <if test="gateway != null  and gateway != ''">
+            and gateway = #{gateway}
+        </if>
+        <if test="buyPort != null  and buyPort != ''">
+            and buy_port = #{buyPort}
+        </if>
+        <if test="queryPort != null  and queryPort != ''">
+            and query_port = #{queryPort}
+        </if>
+        <if test="status != null  and status != ''">
+            and status = #{status}
+        </if>
+        order by create_time desc
+    </select>
+    
+    <select id="selectOperateChannelLabelById" parameterType="Long" resultMap="OperateChannelLabelResult">
+        <include refid="selectOperateChannelLabelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOperateChannelLabel" parameterType="OperateChannelLabel" useGeneratedKeys="true" keyProperty="id">
+        insert into operate_channel_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chaLabCode != null and chaLabCode != ''">cha_lab_code,</if>
+            <if test="chaLabName != null and chaLabName != ''">cha_lab_name,</if>
+            <if test="remark != null">remark,</if>
+            <if test="tgmGroup != null">tgm_group,</if>
+            <if test="tgmContact != null">tgm_contact,</if>
+            <if test="informIp != null and informIp != ''">inform_ip,</if>
+            <if test="configDescribe != null">config_describe,</if>
+            <if test="mchId != null">mch_id,</if>
+            <if test="mchKey != null">mch_key,</if>
+            <if test="payType != null">pay_type,</if>
+            <if test="payWay != null">pay_way,</if>
+            <if test="gateway != null and gateway != ''">gateway,</if>
+            <if test="buyPort != null and buyPort != ''">buy_port,</if>
+            <if test="queryPort != null and queryPort != ''">query_port,</if>
+            <if test="buyParams != null and buyParams != ''">buy_params,</if>
+            <if test="checkParams != null and checkParams != ''">check_params,</if>
+            <if test="returnParams != null and returnParams != ''">return_params,</if>
+            <if test="notifyParams != null and notifyParams != ''">notify_params,</if>
+            <if test="queryRenParams != null and queryRenParams != ''">query_ren_params,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="chaLabCode != null and chaLabCode != ''">#{chaLabCode},</if>
+            <if test="chaLabName != null and chaLabName != ''">#{chaLabName},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="tgmGroup != null">#{tgmGroup},</if>
+            <if test="tgmContact != null">#{tgmContact},</if>
+            <if test="informIp != null and informIp != ''">#{informIp},</if>
+            <if test="configDescribe != null">#{configDescribe},</if>
+            <if test="mchId != null">#{mchId},</if>
+            <if test="mchKey != null">#{mchKey},</if>
+            <if test="payType != null">#{payType},</if>
+            <if test="payWay != null">#{payWay},</if>
+            <if test="gateway != null and gateway != ''">#{gateway},</if>
+            <if test="buyPort != null and buyPort != ''">#{buyPort},</if>
+            <if test="queryPort != null and queryPort != ''">#{queryPort},</if>
+            <if test="buyParams != null and buyParams != ''">#{buyParams},</if>
+            <if test="checkParams != null and checkParams != ''">#{checkParams},</if>
+            <if test="returnParams != null and returnParams != ''">#{returnParams},</if>
+            <if test="notifyParams != null and notifyParams != ''">#{notifyParams},</if>
+            <if test="queryRenParams != null and queryRenParams != ''">#{queryRenParams},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperateChannelLabel" parameterType="OperateChannelLabel">
+        update operate_channel_label
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="chaLabCode != null and chaLabCode != ''">cha_lab_code = #{chaLabCode},</if>
+            <if test="chaLabName != null and chaLabName != ''">cha_lab_name = #{chaLabName},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="tgmGroup != null">tgm_group = #{tgmGroup},</if>
+            <if test="tgmContact != null">tgm_contact = #{tgmContact},</if>
+            <if test="informIp != null and informIp != ''">inform_ip = #{informIp},</if>
+            <if test="configDescribe != null">config_describe = #{configDescribe},</if>
+            <if test="mchId != null">mch_id = #{mchId},</if>
+            <if test="mchKey != null">mch_key = #{mchKey},</if>
+            <if test="payType != null">pay_type = #{payType},</if>
+            <if test="payWay != null">pay_way = #{payWay},</if>
+            <if test="gateway != null and gateway != ''">gateway = #{gateway},</if>
+            <if test="buyPort != null and buyPort != ''">buy_port = #{buyPort},</if>
+            <if test="queryPort != null and queryPort != ''">query_port = #{queryPort},</if>
+            <if test="buyParams != null and buyParams != ''">buy_params = #{buyParams},</if>
+            <if test="checkParams != null and checkParams != ''">check_params = #{checkParams},</if>
+            <if test="returnParams != null and returnParams != ''">return_params = #{returnParams},</if>
+            <if test="notifyParams != null and notifyParams != ''">notify_params = #{notifyParams},</if>
+            <if test="queryRenParams != null and queryRenParams != ''">query_ren_params = #{queryRenParams},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperateChannelLabelById" parameterType="Long">
+        delete from operate_channel_label where id = #{id}
+    </delete>
+
+    <delete id="deleteOperateChannelLabelByIds" parameterType="String">
+        delete from operate_channel_label where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectChannelLabelAll" resultMap="OperateChannelLabelResult">
+        <include refid="selectOperateChannelLabelVo"/>
+        where del_flag = '0' and status = '0'
+    </select>
+
+    <select id="selectOperateChannelLabelByCode" parameterType="String" resultMap="OperateChannelLabelResult">
+        <include refid="selectOperateChannelLabelVo"/>
+        where cha_lab_code = #{code}
+    </select>
+
+    <select id="selectChaLabByGroupId" parameterType="Long" resultMap="OperateChannelLabelResult">
+        <include refid="selectOperateChannelLabelVo"/>
+        where tgm_group = #{tgmGroup}
+    </select>
+</mapper>

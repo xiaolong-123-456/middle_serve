@@ -32,6 +32,11 @@ public class LoginUser implements UserDetails
     private String token;
 
     /**
+     * 系统登陆标识(商户、代理商、我)
+     */
+    private String systemType;
+
+    /**
      * 登录时间
      */
     private Long loginTime;
@@ -117,6 +122,14 @@ public class LoginUser implements UserDetails
     public void setToken(String token)
     {
         this.token = token;
+    }
+
+    public String getSystemType() {
+        return systemType;
+    }
+
+    public void setSystemType(String systemType) {
+        this.systemType = systemType;
     }
 
     @JSONField(serialize = false)

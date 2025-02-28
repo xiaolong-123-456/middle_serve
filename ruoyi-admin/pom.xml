@@ -55,11 +55,39 @@
             <artifactId>ruoyi-quartz</artifactId>
         </dependency>
 
+        <!-- mybatis-plus-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
         <!-- 代码生成-->
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- 加密工具 -->
+        <!--密钥生成-->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
+
+        <!-- 二维码依赖 -->
+        <dependency>
+        <groupId>org.iherus</groupId>
+        <artifactId>qrext4j</artifactId>
+        <version>1.3.1</version>
+        </dependency>
+
+
 
     </dependencies>
 

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRobatMapper">
+    
+    <resultMap type="SysRobat" id="SysRobatResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="tgmRobat"    column="tgm_robat"    />
+        <result property="tgmTechnology"    column="tgm_technology"    />
+        <result property="tgmError"    column="tgm_error"    />
+        <result property="pointsWarn"    column="points_warn"    />
+        <result property="chaQuotaWarn"    column="cha_quota_warn"    />
+        <result property="warnAppend"    column="warn_append"    />
+        <result property="orderLose"    column="order_lose"    />
+        <result property="callbackLose"    column="callback_lose"    />
+        <result property="isImage"    column="is_image"    />
+        <result property="issue"    column="issue"    />
+        <result property="pinned"    column="pinned"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysRobatVo">
+        select id, user_id, tgm_robat, tgm_technology,tgm_error, points_warn, cha_quota_warn, warn_append, order_lose, callback_lose, is_image, issue, pinned, status, del_flag, create_by, create_time, update_by, update_time from sys_robat
+    </sql>
+
+    <select id="selectSysRobatList" parameterType="SysRobat" resultMap="SysRobatResult">
+        <include refid="selectSysRobatVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="tgmRobat != null "> and tgm_robat = #{tgmRobat}</if>
+            <if test="tgmTechnology != null "> and tgm_technology = #{tgmTechnology}</if>
+            <if test="tgmError != null "> and tgm_error = #{tgmError}</if>
+            <if test="pointsWarn != null  and pointsWarn != ''"> and points_warn = #{pointsWarn}</if>
+            <if test="chaQuotaWarn != null  and chaQuotaWarn != ''"> and cha_quota_warn = #{chaQuotaWarn}</if>
+            <if test="warnAppend != null  and warnAppend != ''"> and warn_append = #{warnAppend}</if>
+            <if test="orderLose != null  and orderLose != ''"> and order_lose = #{orderLose}</if>
+            <if test="callbackLose != null  and callbackLose != ''"> and callback_lose = #{callbackLose}</if>
+            <if test="isImage != null  and isImage != ''"> and is_image = #{isImage}</if>
+            <if test="issue != null  and issue != ''"> and issue = #{issue}</if>
+            <if test="pinned != null  and pinned != ''"> and pinned = #{pinned}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysRobatById" parameterType="Long" resultMap="SysRobatResult">
+        <include refid="selectSysRobatVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSysRobatByUserId" parameterType="Long" resultMap="SysRobatResult">
+        <include refid="selectSysRobatVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <select id="selectSysRobatAll" resultMap="SysRobatResult">
+        <include refid="selectSysRobatVo"/>
+        order by create_time asc
+    </select>
+
+    <insert id="insertSysRobat" parameterType="SysRobat" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_robat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="tgmRobat != null">tgm_robat,</if>
+            <if test="tgmTechnology != null">tgm_technology,</if>
+            <if test="tgmError != null">tgm_error,</if>
+            <if test="pointsWarn != null">points_warn,</if>
+            <if test="chaQuotaWarn != null">cha_quota_warn,</if>
+            <if test="warnAppend != null">warn_append,</if>
+            <if test="orderLose != null">order_lose,</if>
+            <if test="callbackLose != null">callback_lose,</if>
+            <if test="isImage != null">is_image,</if>
+            <if test="issue != null">issue,</if>
+            <if test="pinned != null">pinned,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="tgmRobat != null">#{tgmRobat},</if>
+            <if test="tgmTechnology != null">#{tgmTechnology},</if>
+            <if test="tgmError != null">#{tgmError},</if>
+            <if test="pointsWarn != null">#{pointsWarn},</if>
+            <if test="chaQuotaWarn != null">#{chaQuotaWarn},</if>
+            <if test="warnAppend != null">#{warnAppend},</if>
+            <if test="orderLose != null">#{orderLose},</if>
+            <if test="callbackLose != null">#{callbackLose},</if>
+            <if test="isImage != null">#{isImage},</if>
+            <if test="issue != null">#{issue},</if>
+            <if test="pinned != null">#{pinned},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysRobat" parameterType="SysRobat">
+        update sys_robat
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="tgmRobat != null">tgm_robat = #{tgmRobat},</if>
+            <if test="tgmTechnology != null">tgm_technology = #{tgmTechnology},</if>
+            <if test="tgmError != null">tgm_error = #{tgmError},</if>
+            <if test="pointsWarn != null">points_warn = #{pointsWarn},</if>
+            <if test="chaQuotaWarn != null">cha_quota_warn = #{chaQuotaWarn},</if>
+            <if test="warnAppend != null">warn_append = #{warnAppend},</if>
+            <if test="orderLose != null">order_lose = #{orderLose},</if>
+            <if test="callbackLose != null">callback_lose = #{callbackLose},</if>
+            <if test="isImage != null">is_image = #{isImage},</if>
+            <if test="issue != null">issue = #{issue},</if>
+            <if test="pinned != null">pinned = #{pinned},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysRobatById" parameterType="Long">
+        delete from sys_robat where id = #{id}
+    </delete>
+
+    <delete id="deleteSysRobatByIds" parameterType="String">
+        delete from sys_robat where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

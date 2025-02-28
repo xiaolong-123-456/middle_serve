@@ -7,7 +7,7 @@ ruoyi:
   # 版权年份
   copyrightYear: 2024
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: D:/ruoyi/uploadPath
+  profile: /myproject/upload
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
@@ -16,7 +16,7 @@ ruoyi:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 8080
+  port: 8333
   servlet:
     # 应用的访问路径
     context-path: /
@@ -27,12 +27,13 @@ server:
     accept-count: 1000
     threads:
       # tomcat最大线程数，默认为200
-      max: 800
+      max: 1000
       # Tomcat启动初始化的线程数，默认值10
-      min-spare: 100
+      min-spare: 200
 
 # 日志配置
 logging:
+  config: classpath:logback-spring.xml
   level:
     com.ruoyi: debug
     org.springframework: warn
@@ -42,8 +43,8 @@ user:
   password:
     # 密码最大错误次数
     maxRetryCount: 5
-    # 密码锁定时间（默认10分钟）
-    lockTime: 10
+    # 密码锁定时间（默认30分钟）
+    lockTime: 43200
 
 # Spring配置
 spring:
@@ -68,13 +69,13 @@ spring:
   # redis 配置
   redis:
     # 地址
-    host: localhost
+    host: 0.0.0.0
     # 端口，默认为6379
     port: 6379
     # 数据库索引
     database: 0
     # 密码
-    password:
+    password: ZD5566366
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -93,9 +94,9 @@ token:
   # 令牌自定义标识
   header: Authorization
   # 令牌密钥
-  secret: abcdefghijklmnopqrstuvwxyz
+  secret: abcdefghijklmnopqrstuvwxyz_niuxiaoniu
   # 令牌有效期（默认30分钟）
-  expireTime: 30
+  expireTime: 1440
 
 # MyBatis配置
 mybatis:
@@ -115,9 +116,9 @@ pagehelper:
 # Swagger配置
 swagger:
   # 是否开启swagger
-  enabled: true
+  enabled: false
   # 请求前缀
-  pathMapping: /dev-api
+  pathMapping: /
 
 # 防止XSS攻击
 xss:
