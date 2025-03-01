@@ -22,7 +22,7 @@ public class ExecBotConfig {
         //注意一下这里，ProxyType是个枚举，看源码你就知道有NO_PROXY,HTTP,SOCKS4,SOCKS5;
         botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
 
-        return new ExecBot();
+        return new ExecBot(botOptions);
     }
 
 }

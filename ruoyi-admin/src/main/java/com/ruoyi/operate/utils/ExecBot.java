@@ -35,12 +35,12 @@ import java.util.stream.Collectors;
 
 public class ExecBot extends TelegramLongPollingBot {
     //飞机机器人的token和username
-//    private String username ="NiuXiaoNiu_Bot";
-//    private String token ="7830501103:AAGeyuutmziwseezjaDzKexk1RfPa7WhGlA";
+    private String username ="NiuXiaoNiu_Bot";
+    private String token ="7830501103:AAGeyuutmziwseezjaDzKexk1RfPa7WhGlA";
 
     //正式测试财付通
-    private String username ="cftzs_bot";
-    private String token ="7800520436:AAFomD8HxOteCtms1PXqa1ZNehCa3HHDRdI";
+//    private String username ="cftzs_bot";
+//    private String token ="7800520436:AAFomD8HxOteCtms1PXqa1ZNehCa3HHDRdI";
 
 //    private String username ="NiuXiaoNiu2_Bot";
 //    private String token ="7832272066:AAEECgMOsHynUKuzWhc-3G-Krj2YHvIfets";

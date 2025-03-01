@@ -2291,6 +2291,15 @@ public class ApiController extends BaseController
 
                         }
 
+                        //夏天：查单要加上通道编码
+                        if(checkParams.size() > 9){
+
+                            if(checkParams.get(9).get("required").toString().equals("0")){
+                                params.put(checkParams.get(9).get("name").toString(),operateOrder.getPayChannelCode());
+                            }
+
+                        }
+
 
                         //sign验签,value值为0字段空不验证，1字段空也要参与签名
                         try {
@@ -4068,6 +4077,15 @@ public class ApiController extends BaseController
 
                 }
 
+                //夏天：查单要加上通道编码
+                if(checkParams.size() > 9){
+
+                    if(checkParams.get(9).get("required").toString().equals("0")){
+                        params.put(checkParams.get(9).get("name").toString(),operateOrder.getPayChannelCode());
+                    }
+
+                }
+
 
                 //sign验签,value值为0字段空不验证，1字段空也要参与签名
                 try {
@@ -4403,6 +4421,14 @@ public class ApiController extends BaseController
 //        System.out.println(MD5Utils.MD5Encode(result));
 
 //                System.out.println("0".equals(0));
+
+//        BigDecimal a = new BigDecimal("-0.1");
+//        BigDecimal b = new BigDecimal("100");
+//        BigDecimal platRate = a.divide(new BigDecimal(100));
+//        BigDecimal platDeduct = b.multiply(platRate);
+//        BigDecimal platActReceipt = b.subtract(platDeduct);
+//        System.out.println(platActReceipt);
+
 
     }
 
